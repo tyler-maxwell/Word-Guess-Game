@@ -1,10 +1,15 @@
+// global variables
 var currentPhil = 0;
 var philName = "";
 var guessNumb = 12;
 var guesses = [];
 var score = 0;
+var losses = 0;
 var gameOver = true;
+var winSound = document.getElementById("winSound"); 
+var loseSound = document.getElementById("loseSound"); 
 
+// array of philosopher objects
 var philosophers = [{
                         name: "Plato",
                         image: "assets/images/plato.jpg",
@@ -46,17 +51,18 @@ var philosophers = [{
                     }
 ];
 
+// displays the information contained within current philosopher object
 function displayInfo() {
-    // Diplay Image
+    // diplay image
     $("#image").attr("src", philosophers[currentPhil].image);
     
-    // Display Name
+    // display name
     var nameP = $("<p>");
     nameP.text(philosophers[currentPhil].name);
     nameP.attr("class", "dynamic");
     $("#name").append(nameP);
 
-    // Display Birth Info
+    // display birth info
     var birthPlP = $("<p>");
     birthPlP.text(philosophers[currentPhil].birthplace);
     birthPlP.attr("class", "dynamic");
@@ -66,7 +72,7 @@ function displayInfo() {
     birthP.attr("class", "dynamic");
     $("#birth").append(birthP);
 
-    // Display Death Info
+    // display death info
     var deathPlP = $("<p>");
     deathPlP.text(philosophers[currentPhil].deathplace);
     deathPlP.attr("class", "dynamic");
@@ -76,7 +82,7 @@ function displayInfo() {
     deathP.attr("class", "dynamic");
     $("#death").append(deathP);
 
-    // Display Notable Works
+    // display notable works
     for (i = 0; i < philosophers[currentPhil].works.length; i++) {
         var workLi = $("<li>");
         workLi.text(philosophers[currentPhil].works[i]);
@@ -84,7 +90,7 @@ function displayInfo() {
         $("#works").append(workLi);
     }
 
-    // Display Biography
+    // display biography
     for (i = 0; i < philosophers[currentPhil].bio.length; i++) {
         var workP = $("<p>");
         workP.text(philosophers[currentPhil].bio[i]);
@@ -98,33 +104,44 @@ function displayInfo() {
     $("#bio").append(sourceP);
 };
 
+// replaces character at index in string 
 function replaceAt(string, index, replace) {
     return string.substring(0, index) + replace + string.substring(index + 1);
 }
 
+// main game logic
 document.onkeyup = function(event) {
-
+    // resets the game
     if (gameOver == true) {
-        currentPhil = Math.floor(Math.random() * philosophers.length)
-        philName = "";
-        guessNumb = 12;
-        guesses = [];
-        for (i = 0; i < philosophers[currentPhil].name.length; i++) {
-            if (philosophers[currentPhil].name[i] == " ") {
-                philName += " ";
+        // check if key pressed is a letter
+        if (event.key == "a" || event.key == "b" || event.key == "c" || event.key == "d" || event.key == "e" || 
+            event.key == "f" || event.key == "g" || event.key == "h" || event.key == "i" || event.key == "j" || 
+            event.key == "k" || event.key == "l" || event.key == "m" || event.key == "n" || event.key == "o" || 
+            event.key == "p" || event.key == "q" || event.key == "r" || event.key == "s" || event.key == "t" || 
+            event.key == "u" || event.key == "v" || event.key == "w" || event.key == "x" || event.key == "y" || event.key == "z") {
+            
+            currentPhil = Math.floor(Math.random() * philosophers.length)
+            philName = "";
+            guessNumb = 12;
+            guesses = [];
+            for (i = 0; i < philosophers[currentPhil].name.length; i++) {
+                if (philosophers[currentPhil].name[i] == " ") {
+                    philName += " ";
+                }
+                else {
+                    philName += "_";
+                }
             }
-            else {
-                philName += "_";
-            }
+            $("#image").attr("src", "assets/images/unknown-person.gif");
+            $(".dynamic").remove();
+            $("#currentWord").text(philName);
+            $("#guessNumb").text(guessNumb);
+            $("#guesses").text("None");
+            gameOver = false;
         }
-        $("#image").attr("src", "assets/images/unknown-person.gif");
-        $(".dynamic").remove();
-        $("#currentWord").text(philName);
-        $("#guessNumb").text(guessNumb);
-        $("#guesses").text("None");
-        gameOver = false;
     }
 
+    // game in progress
     else if (gameOver == false) {
         // check is key pressed is a letter
         if (event.key == "a" || event.key == "b" || event.key == "c" || event.key == "d" || event.key == "e" || 
@@ -132,20 +149,50 @@ document.onkeyup = function(event) {
             event.key == "k" || event.key == "l" || event.key == "m" || event.key == "n" || event.key == "o" || 
             event.key == "p" || event.key == "q" || event.key == "r" || event.key == "s" || event.key == "t" || 
             event.key == "u" || event.key == "v" || event.key == "w" || event.key == "x" || event.key == "y" || event.key == "z") {
+            
+            var guess = false;
+            var previousGuess = false;
             // check is key pressed matches a letter in philosopher's name
             for (i = 0; i < philosophers[currentPhil].name.length; i ++) {
                 if (event.key == philosophers[currentPhil].name[i].toLowerCase()) {
                     philName = replaceAt(philName, i, event.key);
                     $("#currentWord").text(philName);
-                    console.log(event.key);
-                    console.log(philName);
+                    guess = true;
                 }
             }
+            // checks for wrong guesses
+            for (i = 0; i < guesses.length; i++) {
+                if (event.key == guesses[i]) {
+                    previousGuess = true;
+                }
+            }
+            if (guess == false && previousGuess == false) {
+                guessNumb--;
+                $("#guessNumb").text(guessNumb);
+                guesses.push(event.key);
+                $("#guesses").text(guesses);
+            }
+
+            guess = false;
+            previousGuess = false;
         }
 
+        // check if game was lost
+        if (guessNumb == 0) {
+            displayInfo();
+            losses++;
+            $("#losses").text(losses);
+            gameOver = true;
+            loseSound.play();
+        }
+
+        // check if game was won
         if (philName == philosophers[currentPhil].name.toLowerCase()) {
             displayInfo();
+            score++;
+            $("#wins").text(score);
             gameOver = true;
+            winSound.play(); 
         }
     }
 }
