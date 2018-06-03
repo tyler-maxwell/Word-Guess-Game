@@ -56,5 +56,13 @@
 }
 
 .game-screen h5 {
+
+}
+
+.game-screen .text-center h5 {
     padding-bottom: 30px;
+}
+
+#currentWord {
+    letter-spacing: 3px;
 }
