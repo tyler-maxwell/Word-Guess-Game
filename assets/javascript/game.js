@@ -188,7 +188,7 @@ function displayInfo() {
     var sourceP = $("<a>");
     sourceP.attr("href", philosophers[currentPhil].source)
     sourceP.attr("class", "dynamic");
-    sourceP.text("Biography provided by IEP");
+    sourceP.text("Biography provided by this source");
     $("#bio").append(sourceP);
 };
 
