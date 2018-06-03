@@ -41,6 +41,17 @@
     border-color: black;
     padding: 20px;
     padding-bottom: 0px;
+    padding-right: 0px;
+    max-width: 400px;
+}
+
+.notableWorks h5 {
+    padding-right: 20px;
+}
+
+.notableWorks li {
+    margin-left: 10px;
+    padding-right: 10px;
 }
 
 .biography {
@@ -53,10 +64,6 @@
     border-left-width: 1px;
     border-color: black;
     border-style: solid;
-}
-
-.game-screen h5 {
-
 }
 
 .game-screen .text-center h5 {
