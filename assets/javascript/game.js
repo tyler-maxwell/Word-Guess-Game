@@ -212,6 +212,7 @@ document.onkeyup = function(event) {
             philName = "";
             guessNumb = 6;
             guesses = [];
+            // generates a string with _ in place of letters for word to guess
             for (i = 0; i < philosophers[currentPhil].name.length; i++) {
                 if (philosophers[currentPhil].name[i] == " ") {
                     philName += " ";
@@ -251,12 +252,13 @@ document.onkeyup = function(event) {
                     guess = true;
                 }
             }
-            // checks for wrong guesses
+            // checks for previous wrong guesses
             for (i = 0; i < guesses.length; i++) {
                 if (event.key == guesses[i]) {
                     previousGuess = true;
                 }
             }
+            // fires when a new wrong guess is entered
             if (guess == false && previousGuess == false) {
                 guessNumb--;
                 $("#guessNumb").text(guessNumb);
